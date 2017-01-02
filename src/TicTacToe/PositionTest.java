@@ -2,7 +2,6 @@ package TicTacToe;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import org.omg.CORBA.PUBLIC_MEMBER;
 
 public class PositionTest {
 
@@ -29,9 +28,24 @@ public class PositionTest {
 	@Test
 	public void testWin(){
 		//assertFalse(new Position().win('o'));
-		assertTrue(new Position("xxx      ").win('x'));
-		assertTrue(new Position("   ooo   ").win('o'));
-		assertTrue(new Position("x  x  x  ").win('x'));
-		assertTrue(new Position("x   x   x").win('x'));
+		assertTrue(new Position("xxx      ").isWin('x'));
+		assertTrue(new Position("   ooo   ").isWin('o'));
+		assertTrue(new Position("x  x  x  ").isWin('x'));
+		assertTrue(new Position("x   x   x").isWin('x'));
+	}
+	
+	@Test 
+	public void testMinimax(){
+		assertEquals(100, new Position("xxx      ").minimax());
+		assertEquals(-100, new Position("ooo      ").minimax());
+		assertEquals(0, new Position("xoxoxooxo").minimax());
+		assertEquals(99, new Position(" xx       ").minimax());
+		assertEquals(-99, new Position("oo        ", 'o').minimax());
+	}
+	
+	@Test
+	public void testBestPossibleMove(){
+		assertEquals(0, new Position(" xx       ").bestPossibleMove());
+		assertEquals(1, new Position("o o       ", 'o').bestPossibleMove());
 	}
 }

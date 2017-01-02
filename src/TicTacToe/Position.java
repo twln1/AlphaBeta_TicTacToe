@@ -1,12 +1,10 @@
 package TicTacToe;
 
-import java.awt.List;
-import java.nio.file.spi.FileSystemProvider;
 import java.util.LinkedList;
 
 public class Position {
-	public int dim = 3;
-	public char turn;
+	public int dim = 3;	// 3x3 board
+	public char turn;	// x || o
 	public char[] board;
 	
 	public Position(){
@@ -24,6 +22,11 @@ public class Position {
 		this.turn = turn;
 	}
 	
+	public Position(String string, char turn) {
+		this.board = string.toCharArray();
+		this.turn = turn;
+	}
+
 	public String toString(){
 		return new String(board);
 	}
@@ -47,13 +50,12 @@ public class Position {
 	}
 	
 	/***
-	 * Mathematically check for winning move
 	 * @param turn	Which player's turn are we testing
 	 * @param start	Starting position on the board
 	 * @param step	How many positions to move by
 	 * @return
 	 */
-	public boolean win_line(char turn, int start, int step){
+	public boolean checkLine(char turn, int start, int step){
 		for (int i = 0; i < 3; i++){
 			if(board[start + step*i] != turn){
 				return false;
@@ -66,15 +68,57 @@ public class Position {
 	 * @param turn	Which player are we testing a win for
 	 * @return		TRUE on a win condition
 	 */
-	public boolean win(char turn){
+	public boolean isWin(char turn){
 		for(int i = 0; i < dim; i++){
-			// Horizontal/vertical win
-			if(win_line(turn, i*dim, 1) || win_line(turn, i, dim))
+			// Horizontal || Vertical win (e.g. 0 -> 3 -> 6)
+			if(checkLine(turn, i*dim, 1) || checkLine(turn, i, dim))
 				return true;
 			// Diagonal win
-			if ((win_line(turn, dim-1, dim-1) || win_line(turn, 0, dim+1)))
+			if ((checkLine(turn, dim-1, dim-1) || checkLine(turn, 0, dim+1)))
 				return true;
 		}
 		return false;
+	}
+	
+	/***
+	 * 			Method to calculate the minimax value of a move
+	 * @return the minimax value
+	 */
+	public int minimax() {
+		if(isWin('x'))
+			return 100;
+		if(isWin('o'))
+			return -100;
+		if(possibleMoves().length == 0)
+			return 0;
+		Integer minimaxVal = null;
+		for(Integer index : possibleMoves()){
+				Integer value = move(index).minimax();
+				if(minimaxVal == null || turn == 'x' && minimaxVal < value || turn == 'o' && value < minimaxVal){
+					minimaxVal = value;
+				}
+		}
+		/*
+		    Extra move, -1 penalty.
+			Minimax is recursive so -1 each time for depth of search
+		*/
+		return minimaxVal + (turn == 'x' ? -1: 1);
+	}
+	
+	/***
+	 * 			
+	 * @return value of the best move
+	 */
+	public int bestPossibleMove() {
+		Integer minimaxVal = null;
+		int bestMove = -1;
+		for(Integer index : possibleMoves()){
+			Integer value = move(index).minimax();
+			if(minimaxVal == null || turn == 'x' && minimaxVal < value || turn == 'o' && value < minimaxVal){
+				minimaxVal = value;
+				bestMove = index;
+			}
+		}
+		return bestMove;
 	}
 }
