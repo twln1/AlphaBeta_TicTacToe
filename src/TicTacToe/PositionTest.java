@@ -4,13 +4,6 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class PositionTest {
-
-	@Test
-	public void testNew() throws Exception{
-		Position p = new Position();
-		assertEquals("         ", p.toString());
-		assertEquals('x', p.turn);
-	}
 	
 	@Test
 	public void testMove() throws Exception{
@@ -47,5 +40,11 @@ public class PositionTest {
 	public void testBestPossibleMove(){
 		assertEquals(0, new Position(" xx       ").bestPossibleMove());
 		assertEquals(1, new Position("o o       ", 'o').bestPossibleMove());
+	}
+	
+	@Test
+	public void testEndGame(){
+		assertFalse(new Position().gameOver());
+		assertTrue(new Position("xxx      ").gameOver());
 	}
 }

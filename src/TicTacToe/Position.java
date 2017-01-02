@@ -37,6 +37,9 @@ public class Position {
 		return new Position(cloneBoard, turn == 'x' ? 'o' : 'x');
 	}
 	
+	/***
+	 * @return	An array of the possible moves
+	 */
 	public Integer [] possibleMoves(){
 		LinkedList<Integer> list = new LinkedList<Integer>();
 		for(int i = 0; i < board.length; i++){
@@ -81,7 +84,7 @@ public class Position {
 	}
 	
 	/***
-	 * 			Method to calculate the minimax value of a move
+	 * 		Method to calculate the minimax value of a move
 	 * @return the minimax value
 	 */
 	public int minimax() {
@@ -105,10 +108,6 @@ public class Position {
 		return minimaxVal + (turn == 'x' ? -1: 1);
 	}
 	
-	/***
-	 * 			
-	 * @return value of the best move
-	 */
 	public int bestPossibleMove() {
 		Integer minimaxVal = null;
 		int bestMove = -1;
@@ -120,5 +119,11 @@ public class Position {
 			}
 		}
 		return bestMove;
+	}
+
+	public boolean gameOver() {
+		if(isWin('x') || isWin('o') || possibleMoves().length == 0)
+			return true;
+		return false;
 	}
 }
